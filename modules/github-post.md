@@ -1,0 +1,201 @@
+# GitHub Post Module
+
+You are posting review findings to GitHub as a single cohesive review. This creates a pending review, adds inline comments, and submits with a verdict — producing one clean review instead of scattered individual comments.
+
+## Prerequisites
+
+- `findings_to_post` — list of findings to post as inline comments
+- `verdict` — "Approve" / "Approve with Suggestions" / "Request Changes"
+- `verdict_body` — summary text for the review body
+- `pr_owner`, `pr_repo`, `pr_number` — PR identity
+
+## Steps
+
+### 1. Load GitHub Tools
+
+Use `ToolSearch` to ensure these GitHub MCP tools are available:
+- `+github pull_request_review_write` — for creating and submitting reviews
+- `+github add_comment_to_pending_review` — for adding inline comments
+
+If MCP tools are unavailable, fall back to `gh api` CLI commands.
+
+### 2. Map Verdict to GitHub Event
+
+| Our Verdict | GitHub Review Event |
+|-------------|-------------------|
+| Approve | `APPROVE` |
+| Approve with Suggestions | `COMMENT` |
+| Request Changes | `REQUEST_CHANGES` |
+
+### 3. Build Review Body
+
+Compose the top-level review body that appears as the review summary:
+
+```markdown
+## Review Buddy Summary
+
+{verdict_badge} **{verdict}**
+
+{verdict_body}
+
+### Findings
+
+| Severity | Count |
+|----------|-------|
+| 🔴 Action Required | {count} |
+| 🟡 Recommended | {count} |
+| 🟢 Minor | {count} |
+
+{if there are unaddressed comment warnings:}
+### ⚠️ Previous Review Comments
+
+{N} comment threads from previous reviews may still need attention.
+
+---
+*Reviewed with [Review Buddy](https://github.com) — chunked interactive PR review*
+```
+
+### 4. Create Pending Review
+
+Use `pull_request_review_write` with method `create` to create a pending review:
+
+```
+pull_request_review_write({
+  method: "create",
+  owner: PR_OWNER,
+  repo: PR_REPO,
+  pullNumber: PR_NUMBER
+})
+```
+
+This returns a `review_id` that you'll use for adding comments.
+
+If using CLI fallback:
+```bash
+gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/reviews \
+  --method POST \
+  --field body="" \
+  --field event="PENDING"
+```
+
+### 5. Add Inline Comments
+
+For each finding in `findings_to_post`, add it as an inline comment on the pending review:
+
+#### Prepare the comment body
+
+Format each finding's comment body:
+
+```markdown
+{severity_badge} **{short_title}**
+
+**Category:** {category} | **Confidence:** {score}/100
+
+{description}
+
+{if suggestion is available:}
+```suggestion
+{suggested_code_fix}
+```
+
+{if related to existing comment:}
+> 💬 Related to existing thread by @{author}
+```
+
+#### Determine comment position
+
+For each finding, you need:
+- `path` — the file path relative to repo root
+- `line` — the line number in the diff to comment on (must be within the diff hunks)
+- `side` — `RIGHT` for additions, `LEFT` for deletions
+
+**Important**: GitHub only allows inline comments on lines that are part of the diff. If a finding references a line not in the diff, attach the comment to the nearest diff line in the same file, or add it as a general review comment instead.
+
+#### Add the comment
+
+Use `add_comment_to_pending_review`:
+
+```
+add_comment_to_pending_review({
+  owner: PR_OWNER,
+  repo: PR_REPO,
+  pullNumber: PR_NUMBER,
+  body: comment_body,
+  path: file_path,
+  line: line_number,
+  side: "RIGHT"  // or "LEFT" for deletions
+})
+```
+
+If using CLI fallback:
+```bash
+gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID}/comments \
+  --method POST \
+  --field path="{file_path}" \
+  --field line={line_number} \
+  --field side="RIGHT" \
+  --field body="{comment_body}"
+```
+
+#### Handle errors
+
+- If a comment fails to post (e.g., invalid line number), log the error and continue with remaining comments
+- At the end, report how many comments were successfully posted vs. failed
+- For failed comments, include them in the review body instead as general notes
+
+### 6. Submit the Review
+
+Once all inline comments are added, submit the pending review:
+
+Use `pull_request_review_write` with method `submit_pending`:
+
+```
+pull_request_review_write({
+  method: "submit_pending",
+  owner: PR_OWNER,
+  repo: PR_REPO,
+  pullNumber: PR_NUMBER,
+  reviewId: review_id,
+  event: github_event,  // APPROVE, COMMENT, or REQUEST_CHANGES
+  body: review_body
+})
+```
+
+If using CLI fallback:
+```bash
+gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID}/events \
+  --method POST \
+  --field event="{github_event}" \
+  --field body="{review_body}"
+```
+
+### 7. Confirm and Clean Up
+
+After successful submission:
+
+1. Display confirmation:
+   ```
+   ✅ Review posted to GitHub!
+
+   Verdict: {verdict_badge} {verdict}
+   Comments: {posted_count} inline + {failed_count} in review body
+   URL: https://github.com/{PR_OWNER}/{PR_REPO}/pull/{PR_NUMBER}
+   ```
+
+2. Clean up state files using `scripts/state-manager.md`:
+   - Remove `.review-buddy/review-buddy-state.md`
+   - Remove `.review-buddy/review-buddy-findings.md` (if it exists)
+
+3. If any comments failed to post, display them:
+   ```
+   ⚠️ {failed_count} comments couldn't be posted as inline comments (line not in diff).
+   They were included in the review body instead.
+   ```
+
+### Error Recovery
+
+If the review creation or submission fails entirely:
+1. Display the error message
+2. Save the findings to `.review-buddy/review-buddy-findings.md` as a backup
+3. Advise: "Review could not be posted. Findings saved locally. Try again with `/review-buddy --post-only`."
+4. Do NOT leave an orphaned pending review — if creation succeeded but submission failed, attempt to delete the pending review
