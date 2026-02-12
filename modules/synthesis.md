@@ -120,18 +120,18 @@ Present up to 3 key themes and 1-2 growth areas (if `mentoring` is true).
 
 ### All Findings
 
-{List all findings grouped by severity, using assets/finding-template.md format}
+{List all findings grouped by severity, numbered sequentially across all chunks, using assets/finding-template.md format}
 
 #### 🔴 Action Required ({count})
-{findings}
+H-{N} {findings}
 
 #### 🟡 Recommended ({count})
-{findings}
+M-{N} {findings}
 
 #### 🟢 Minor ({count})
 <details>
 <summary>Show {count} minor suggestions</summary>
-{findings}
+L={N} {findings}
 </details>
 
 ### Positive Aspects
@@ -159,7 +159,10 @@ Solicit user intent following the **Agnostic Interaction Protocol** (`references
 - If confirmed (or no tasks), proceed to `github-post.md` module with the selected findings and verdict.
 
 #### If user chooses "Select specific findings":
-- Display a numbered list of all findings
+
+- Display a numbered list of all findings, e.g.:
+    🔴H-1 Action Required: Unchecked null dereference
+    🟡M-1 Recommended: Missing error handling
 - Ask the user to enter the numbers they want to post (comma-separated)
 - Mark only those findings for GitHub posting
 - Return to the Posting Decision gate

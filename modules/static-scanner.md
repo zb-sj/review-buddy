@@ -19,12 +19,13 @@ For each changed file, run `search_file_content` (or equivalent grep) with the f
 | **Debug** | `console\.log\(`, `debugger;`, `FIXME`, `TODO: [^ ]+` |
 | **Security** | `eval\(`, `dangerouslySetInnerHTML`, `\.(innerHTML|outerHTML)` |
 | **Logic** | `http://localhost`, `127\.0\.0\.1` |
+| **UI/Visual** | `rgba?\(\d+, \d+, \d+`, `#[0-9a-fA-F]{3,6}`, `!important`, `z-index: \d{4,}` |
 
 ### 2. Triage Findings
 Findings from this scan are automatically categorized as:
 - **🔴 Action Required**: Secrets, `eval`, `debugger`.
-- **🟡 Recommended**: `dangerouslySetInnerHTML`, `localhost` URLs.
-- **🟢 Minor**: `console.log`, `FIXME`.
+- **🟡 Recommended**: `dangerouslySetInnerHTML`, `localhost` URLs, `!important`, hardcoded hex/rgb colors (if design tokens are used).
+- **🟢 Minor**: `console.log`, `FIXME`, high `z-index`.
 
 ### 3. Integration
 - Append these findings to the global `all_findings` list with a `source: "static-scanner"` flag.

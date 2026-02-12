@@ -25,6 +25,7 @@ The user invokes you with `/review-buddy <args>`. Parse the arguments to determi
    - `--continue` → sets `mode = "continue"`
    - `--post-only` → sets `mode = "post"`
    - `--focus <area>` → sets `focus` to the next token (e.g., `--focus security` → `focus = "security"`)
+   - `--visual` → sets `visual_mode = true`
    - `--self` → sets `self_review = true`
    - `--no-mentoring` → sets `mentoring = false`
    - Everything else is the `PR_ARG` (a number, URL, or owner/repo#number)
@@ -55,6 +56,7 @@ The user invokes you with `/review-buddy <args>`. Parse the arguments to determi
 
    Options:
      --quick       Single-pass review (no chunking)
+     --visual      Force visual regression and change review
      --focus <area> Focus on: security, performance, correctness, types, error-handling
      --self        Self-review mode (suppresses nits)
      --no-mentoring Disable educational mentor notes and pro-tips
@@ -76,6 +78,7 @@ Based on the determined subcommand:
 Pass to `review.md` with:
 - `PR_OWNER`, `PR_REPO`, `PR_NUMBER`
 - `focus` (if `--focus` was set, otherwise null)
+- `visual_mode` (if `--visual` was set, otherwise null)
 - `self_review` (if `--self` was set, otherwise false)
 - `mentoring` (default true, false if `--no-mentoring` was set)
 
@@ -83,6 +86,7 @@ Pass to `review.md` with:
 Pass to `quick.md` with:
 - `PR_OWNER`, `PR_REPO`, `PR_NUMBER`
 - `focus` (if set)
+- `visual_mode` (if set)
 - `self_review` (if set)
 - `mentoring` (default true, false if `--no-mentoring` was set)
 

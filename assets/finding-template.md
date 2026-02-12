@@ -4,20 +4,20 @@ This module defines the consistent format template for all review findings. Ever
 
 ## Severity Levels
 
-There are exactly three severity levels. Use the appropriate badge for each:
+There are exactly three severity levels. Use the appropriate badge with a severity-prefixed number for each:
 
-| Level | Badge | When to Use |
-|-------|-------|-------------|
-| Critical | `🔴 Action Required` | Bugs, security vulnerabilities, data loss risks, correctness issues, race conditions |
-| Warning | `🟡 Recommended` | Missing error handling, type safety gaps, API design issues, performance concerns, missing validation |
-| Info | `🟢 Minor` | Style nits, naming suggestions, minor readability improvements, documentation gaps |
+| Level | Badge | Prefix | When to Use |
+|-------|-------|--------|----------|
+| Critical | `🔴 Action Required` | H1, H2, H3... | Bugs, security vulnerabilities, data loss risks, correctness issues, race conditions |
+| Warning | `🟡 Recommended` | M1, M2, M3... | Missing error handling, type safety gaps, API design issues, performance concerns, missing validation |
+| Info | `🟢 Minor` | L1, L2, L3... | Style nits, naming suggestions, minor readability improvements, documentation gaps |
 
 ## Finding Template
 
 Format each finding exactly as follows:
 
 ```
-### {severity_badge} {short_title}
+### {severity_badge}{severity_prefix} {short_title}
 
 **File:** `{file_path}:{line_number}` | **Category:** {category} | **Confidence:** {score}/100
 
@@ -26,6 +26,12 @@ Format each finding exactly as follows:
 ```suggestion
 {suggested fix if applicable}
 ```
+
+### 🖼 Visual Evidence (Optional)
+{Include side-by-side comparison or screenshots if available}
+| Design / Baseline | Actual / Regression |
+| :--- | :--- |
+| ![Baseline]({url}) | ![Actual]({url}) |
 
 ### 💡 Mentor's Note (Optional)
 {A concise "why" or "pro-tip" that explains the underlying principle, project-specific pattern, or domain context. Keep it to 1-2 sentences. This helps both the reviewer and reviewee learn.}
@@ -40,6 +46,7 @@ Format each finding exactly as follows:
 
 ### Field Definitions
 
+- **severity_prefix**: A severity-prefixed number: `H1`, `H2`, `H3`... for Critical; `M1`, `M2`, `M3`... for Warning; `L1`, `L2`, `L3`... for Info. This allows findings to be uniquely identified and referenced across the entire review. The number increments for each new finding of that severity level across all chunks in the review.
 - **severity_badge**: One of `🔴 Action Required`, `🟡 Recommended`, or `🟢 Minor`.
 - **short_title**: A concise, specific description of the issue (e.g., "Unchecked null dereference in user lookup", "Missing error boundary around API call"). Do not use generic titles like "Potential issue" or "Code smell".
 - **file_path**: The path of the file relative to the repository root, as it appears in the PR diff.

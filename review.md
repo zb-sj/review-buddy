@@ -23,16 +23,29 @@ This phase:
 1. Loads GitHub MCP tools via ToolSearch (search for `+github pull_request` and `+github issue`)
 2. Fetches PR metadata, changed files, CI status, and commits **in parallel**
 3. Extracts linked issues from the PR description
-4. Displays the PR overview with change summary table
+4. Displays the PR overview with change summary table and **Visual Change Detection** status
 5. Presents a user gate
 
 **Handle user gate responses:**
-- **Proceed** → continue to Phase 2
-- **Set focus** → store the focus area, then continue to Phase 2
+- **Proceed** → continue to Phase 1.5 (if visual changes detected) or Phase 2
+- **Set focus** → store the focus area, then continue
 - **Quick mode** → switch to `quick.md` workflow instead (pass all gathered data)
 - **Cancel** → stop, display "Review cancelled."
 
 Store all outputs from Phase 1 for subsequent phases.
+
+---
+
+### Phase 1.5: Visual Discovery (Conditional)
+
+If `visual_changes_detected` is true OR `visual_mode` is set:
+Follow the instructions in `modules/visual-discovery.md`.
+
+This phase:
+1. Fetches Figma designs and screenshots
+2. Matches regression snapshots
+3. Checks for MobileMCP context
+4. Presents a user gate to confirm visual review scope
 
 ---
 
@@ -93,8 +106,9 @@ Follow the instructions in `modules/chunk-reviewer.md`.
 
 This phase runs an interactive loop over each chunk:
 1. Display chunk header
-2. Show existing comments on chunk's files (trust-aware ordering)
-3. Analyze the diff against review dimensions
+2. **Visual Analysis (if enabled)**: If chunk contains UI/visual files, follow `modules/visual-reviewer.md` to analyze visual diffs.
+3. Show existing comments on chunk's files (trust-aware ordering)
+4. Analyze the diff against review dimensions
 4. Present findings with severity triage (using `assets/finding-template.md` format)
 5. Show positive observations
 6. User gate per chunk

@@ -42,7 +42,16 @@ Scan the PR body for issue references:
 - Pattern: `https://github.com/{owner}/{repo}/issues/(\d+)`
 - For each linked issue, fetch its title and status using `issue_read` or `gh issue view`
 
-### 4. Compute Summary Statistics
+### 5. Detect Visual Changes
+
+Analyze the `changed_files` list and PR metadata to identify potential visual impacts:
+- **UI Extensions**: `.css`, `.scss`, `.less`, `.styled.*`, `.module.css`, `.png`, `.jpg`, `.jpeg`, `.svg`, `.jsx`, `.tsx`, `.vue`, `.svelte`, `.html`.
+- **Snapshots**: Any files within `**/snapshots/*.png` or similar visual regression directories (e.g., Playwright, Cypress).
+- **Figma Links**: Search the PR body for `figma.com/file/` or `figma.com/design/` URLs.
+
+**Output**: Set `visual_changes_detected = true` if any of the above are found. Identify specific Figma URLs and snapshot paths.
+
+### 6. Compute Summary Statistics
 
 From the changed files list, compute:
 - **Total files changed**: count of files
@@ -52,7 +61,7 @@ From the changed files list, compute:
 - **Estimated chunks**: ceil(total_LOC / 300)
 - **Estimated review time**: chunks × 5 minutes (rough heuristic)
 
-### 5. Display PR Overview
+### 7. Display PR Overview
 
 Present the overview in this format:
 
@@ -64,6 +73,7 @@ Author: @{author} | Branch: {head} → {base} | Created: {date}
 Status: {state} {draft_badge} | Mergeable: {mergeable}
 Labels: {labels}
 CI: {check_status_summary}
+Visual Changes: {detected/not detected} {figma_link_count} {snapshot_count}
 
 ### Change Summary
 
@@ -93,7 +103,7 @@ CI: {check_status_summary}
 - ...
 ```
 
-### 6. Size-Based Recommendations
+### 8. Size-Based Recommendations
 
 Based on the PR size, provide a recommendation:
 - **< 100 LOC**: "This is a small PR. Consider using `--quick` for a faster review."
@@ -102,7 +112,7 @@ Based on the PR size, provide a recommendation:
 - **2000+ LOC**: "⚠️ Very large PR ({LOC} lines across {files} files). Consider whether this should be split. Proceeding with chunked review."
 - **50+ files**: "⚠️ This PR touches {N} files. Review will be chunked but may take a while."
 
-### 7. User Gate
+### 9. User Gate
 
 Ask the user to choose how to proceed:
 
@@ -114,11 +124,13 @@ Ask the user to choose how to proceed:
 
 Use `AskUserQuestion` with these options.
 
-### 8. Output
+### 10. Output
 
 Store the following for use by subsequent phases:
 - `pr_metadata` — full PR metadata object
 - `changed_files` — list of changed files with paths, status, additions, deletions, patch content
+- `visual_changes_detected` — boolean
+- `visual_context` — map of figma_urls, snapshot_paths
 - `ci_status` — CI check results
 - `commits` — list of commits
 - `linked_issues` — list of linked issue references

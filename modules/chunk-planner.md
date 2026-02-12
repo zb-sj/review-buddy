@@ -19,6 +19,7 @@ Assign each changed file to exactly one category based on its path and name:
 | `config` | 2 | `*.config.*`, `.env*`, `tsconfig*`, `package.json`, `*.yml`, `*.yaml`, `Dockerfile`, `*.toml` |
 | `docs` | 2 | `*.md`, `*.mdx`, `docs/*`, `README*`, `CHANGELOG*`, `LICENSE` |
 | `style` | 2 | `*.css`, `*.scss`, `*.less`, `*.styled.*`, `*.module.css`, `tailwind*` |
+| `visual` | 2.5 | `*.png`, `*.jpg`, `*.jpeg`, `*.svg`, `**/snapshots/*.png` |
 | `utility` | 3 | `utils/*`, `helpers/*`, `lib/*`, `shared/*`, `common/*` |
 | `core-logic` | 4 | `services/*`, `core/*`, `engine/*`, `api/*`, `server/*`, `controllers/*`, `middleware/*` |
 | `component` | 5 | `components/*`, `pages/*`, `views/*`, `screens/*`, `layouts/*`, `app/*` |

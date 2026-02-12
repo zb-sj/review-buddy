@@ -15,8 +15,28 @@
 - **⚡ Multiple Modes**: 
   - **Interactive**: The default guided experience.
   - **Quick**: A single-pass review for small PRs.
+  - **Visual**: Automated and interactive visual regression review (via Figma, Playwright, or MobileMCP).
   - **Self-Review**: Optimized for reviewing your own work (suppresses minor nits).
   - **Focused**: Concentrates analysis on specific areas like `security`, `performance`, or `types`.
+
+---
+
+## 🎨 Visual Review & Regression
+
+Review Buddy automatically detects visual changes and triggers an enhanced review phase when:
+- **UI Components/Styles** are changed (`.tsx`, `.jsx`, `.css`, `.scss`, etc.).
+- **Figma Links** are found in the PR description.
+- **Playwright/Cypress Snapshots** are updated in the PR.
+
+### How it helps:
+1. **Design Fidelity**: Compares your implementation against Figma designs using multimodal AI.
+2. **Regression Testing**: Identifies and surfaces visual diffs from automated snapshot tests.
+3. **Mobile Inspection**: Leverages MobileMCP for mobile-specific visual verification.
+
+To force a visual review even if not automatically detected, use:
+```bash
+/review-buddy --visual
+```
 
 ---
 

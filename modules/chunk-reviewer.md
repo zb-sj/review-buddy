@@ -104,17 +104,17 @@ Group findings by severity using the format from `assets/finding-template.md`:
 ### Findings for Chunk {N}
 
 {If any Action Required findings:}
-#### 🔴 Action Required
+#### 🔴H-{M} Action Required
 
 {findings formatted per assets/finding-template.md}
 
 {If any Recommended findings:}
-#### 🟡 Recommended
+#### 🟡M-{M} Recommended
 
 {findings formatted per assets/finding-template.md}
 
 {If any Minor findings AND not in --self mode:}
-#### 🟢 Minor
+#### 🟢L-{M} Minor
 <details>
 <summary>{count} minor suggestions</summary>
 {findings formatted per assets/finding-template.md}
@@ -175,7 +175,10 @@ If user chooses **"Deep-dive"**:
 - After deep-dive, return to the user gate for this same chunk
 
 If user chooses **"Mark findings for GitHub"**:
-- Show a numbered list of findings from this chunk
+
+- Show a numbered list of findings from this chunk, e.g.:
+   🔴H-1 Action Required: Unchecked null dereference
+   🟡M-1 Recommended: Missing error handling
 - Ask which to mark (all / specific numbers)
 - Set `marked_for_github: true` on selected findings
 - Continue to the user gate (don't advance chunks yet)
