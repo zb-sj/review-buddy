@@ -1,6 +1,6 @@
-# Static Scanner (Pre-LLM Analysis)
+# Static Scanner (Phase 2.5 - Parallel)
 
-You are performing a deterministic pre-scan of the PR changes. Your goal is to catch low-hanging fruit and obvious anti-patterns before passing the diff to the LLM-based chunk reviewer.
+You are performing a deterministic pre-scan of the PR changes. This module is initiated by the Leader in parallel with Phase 1 and 2 to minimize session latency.
 
 ## Objectives
 - Identify hardcoded secrets and sensitive information.

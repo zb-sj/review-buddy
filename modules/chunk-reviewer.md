@@ -62,39 +62,33 @@ If there are **no existing comments** on this chunk's files, display:
 No existing review comments on these files.
 ```
 
-### Step 3: Analyze the Diff (Actor-Critic Workflow)
+### Step 3: Agnostic A2A Team Meeting
 
-Analyze the diff using a two-pass agentic approach to ensure high accuracy and depth.
+The Leader orchestrates the review using the **Agnostic A2A Protocol** (`modules/teams/protocol.md`) to ensure professional, multi-perspective feedback.
 
-#### 3.1: Actor Pass (Initial Findings)
-Read each file's diff and apply the appropriate **Specialized Persona** based on the `focus` area:
+#### 3.1: Look-ahead (Background)
+While the user is interacting with Chunk {N}, the Leader triggers the A2A analysis for Chunk {N+1} in the background.
 
-| Focus | Persona / Mindset |
-|-------|-------------------|
-| **Security** | OWASP-first. Look for injection, improper auth, PII exposure, and unsafe defaults. |
-| **Performance** | Efficiency-first. Look for N+1, memory leaks, blocking I/O, and heavy computation. |
-| **Correctness** | Reliability-first. Look for logic flaws, edge cases, and state management bugs. |
-| **API Design** | DX-first. Look for breaking changes, naming clarity, and consistency. |
-| **None** | Generalist. Balance all dimensions. |
+#### 3.2: Independent Discovery (Parallel)
+The Leader assigns the `[A2A-TASK-ASSIGNMENT]` to the following Teammates:
+- **`security-specialist`**: High-confidence security & secret scanning.
+- **`performance-architect`**: Algorithmic and resource efficiency.
+- **`clean-code-mentor`**: Readability and pattern adherence.
 
-Generate a draft list of findings including description and confidence. 
+Each teammate returns an `[A2A-TECHNICAL-REPORT]`.
 
-**Educational Value (if `mentoring` is true)**: 
-For each finding, brainstorm a concise **"Mentor's Note"**. 
-- Explain **why** the issue matters in this project's domain.
-- Provide a **pro-tip** (e.g., a more idiomatic way to achieve the same result using existing project utilities).
-- Ensure the tone is helpful for the **Reviewer** (learning during the session) and professional for the **Reviewee** (feedback on GitHub).
+#### 3.3: The Agnostic Challenge Turn (Share & Challenge)
+The Leader shares reports among teammates for critique:
+- **Example**: Security report is sent to `performance-architect` via `[A2A-CHALLENGE-REQUEST]`.
+- **Goal**: Identify trade-offs (e.g., "The security fix adds O(n) overhead").
 
-If `mentoring` is false, skip generating "Mentor's Note".
+#### 3.4: Consolidation & Synthesis
+The Leader (Review Buddy) reviews the A2A reports and critiques:
+1. **Resolve Conflicts**: Weights findings based on `focus` area and impact.
+2. **Translate**: Converts technical A2A data into "Buddy" language.
+3. **Format**: Groups into `Action Required`, `Recommended`, and `Minor` using the findings template.
 
-#### 3.2: Critic Pass (Reflection & Self-Correction)
-Review the draft findings against these criteria:
-- **Existence check**: Is the problematic code actually present in the added/modified lines?
-- **Business Logic check**: Does this finding conflict with the apparent intent of the change?
-- **False Positive check**: Is this a known pattern or a false positive for the category?
-- **Reflexion Logic**: Document your reasoning in the hidden `<!-- Reflexion Logic -->` field of `assets/finding-template.md`.
-
-Only findings that survive the Critic Pass and have a **confidence >= 80** are moved to Step 4.
+Only findings with consolidated **confidence >= 80** are moved to Step 4.
 
 ### Step 4: Present Findings
 

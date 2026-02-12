@@ -15,24 +15,15 @@ Execute the 5 phases sequentially. Each phase has a user gate — respect the us
 
 ---
 
-### Phase 1: Context Assembly
+### Phase 1: Context Assembly (Parallel)
 
 Follow the instructions in `modules/context-assembly.md`.
 
-This phase:
-1. Loads GitHub MCP tools via ToolSearch (search for `+github pull_request` and `+github issue`)
-2. Fetches PR metadata, changed files, CI status, and commits **in parallel**
-3. Extracts linked issues from the PR description
-4. Displays the PR overview with change summary table and **Visual Change Detection** status
-5. Presents a user gate
-
-**Handle user gate responses:**
-- **Proceed** → continue to Phase 1.5 (if visual changes detected) or Phase 2
-- **Set focus** → store the focus area, then continue
-- **Quick mode** → switch to `quick.md` workflow instead (pass all gathered data)
-- **Cancel** → stop, display "Review cancelled."
-
-Store all outputs from Phase 1 for subsequent phases.
+This phase initiates the **Parallel Scanning Workflow**:
+1. **Metadata**: Fetches PR metadata, changed files, and CI status.
+2. **Parallel Trigger**: As soon as diffs are available, the Leader initiates **Phase 2 (Comments Digest)** and **Phase 2.5 (Static Scanning)** in the background.
+3. Displays the PR overview.
+4. Presents a user gate.
 
 ---
 
@@ -49,31 +40,13 @@ This phase:
 
 ---
 
-### Phase 2: Comments Digest
+### Phase 2 & 2.5: Background Analysis (Parallel)
 
-Follow the instructions in `modules/comments-digest.md`.
+While the user is reviewing the Phase 1 overview, the Leader manages the parallel completion of:
+- **Comments Digest (`modules/comments-digest.md`)**: Aggregates review history.
+- **Static Scanning (`modules/static-scanner.md`)**: Deterministic pattern matching.
 
-This phase:
-1. Fetches review threads, review summaries, and general comments **in parallel**
-2. Categorizes into: Unresolved, Resolved, Bot, Verdicts
-3. Performs resolution trust analysis on resolved threads
-4. Builds `comments_by_file` map with trust levels
-5. Displays the comments summary
-
-No user gate in this phase — proceed directly to Phase 2.5 after displaying the summary.
-
----
-
-### Phase 2.5: Static Scanning
-
-Follow the instructions in `modules/static-scanner.md`.
-
-This phase:
-1. Performs deterministic regex-based scanning on all added lines.
-2. Identifies secrets, debug artifacts, and security anti-patterns.
-3. Groups findings into `static_findings`.
-
-No user gate — proceed to Phase 3.
+The results are synthesized by the Leader and presented after the Phase 1 gate is cleared.
 
 ---
 
@@ -100,18 +73,16 @@ This phase:
 
 ---
 
-### Phase 4: Progressive Chunk Review
+### Phase 4: Leader-Led A2A Team Review
 
-Follow the instructions in `modules/chunk-reviewer.md`.
+This phase follows the **Agnostic A2A Protocol** (`modules/teams/protocol.md`) to conduct interactive reviews.
 
-This phase runs an interactive loop over each chunk:
-1. Display chunk header
-2. **Visual Analysis (if enabled)**: If chunk contains UI/visual files, follow `modules/visual-reviewer.md` to analyze visual diffs.
-3. Show existing comments on chunk's files (trust-aware ordering)
-4. Analyze the diff against review dimensions
-4. Present findings with severity triage (using `assets/finding-template.md` format)
-5. Show positive observations
-6. User gate per chunk
+**The Team Meeting Workflow:**
+1. **Independent Analysis**: Leader assigns chunk diffs to specialized Teammates (`security-specialist`, `performance-architect`, etc.) via A2A protocol.
+2. **The Agnostic Challenge Turn**: Leader shares reports among teammates to identify trade-offs and resolve conflicts.
+3. **Consolidation**: Leader synthesizes the expert discussion into user-friendly feedback.
+4. **Look-ahead Concurrency**: While the user reviews Chunk N, the Leader triggers the A2A analysis for Chunk N+1 in the background.
+5. **Interactive Gate**: Leader presents findings and handles user intent.
 
 **Handle user gate responses per chunk:**
 - **Continue** → move to next chunk
