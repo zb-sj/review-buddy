@@ -36,7 +36,8 @@ Format each finding exactly as follows:
 ### 💡 Mentor's Note (Optional)
 {A concise "why" or "pro-tip" that explains the underlying principle, project-specific pattern, or domain context. Keep it to 1-2 sentences. This helps both the reviewer and reviewee learn.}
 
-{optional: reference to existing comment if related, e.g. "Related to comment by @reviewer on line 45"}
+{optional: reference to existing comment if related}
+> 💬 Related to @{author}'s comment at {file}:{line} (thread_id: {thread_id})
 
 <!-- 
 ### Reflexion Logic (Internal Only)
@@ -55,7 +56,7 @@ Format each finding exactly as follows:
 - **score**: A confidence score from 0 to 100 indicating how certain you are that this is a real issue and not a false positive.
 - **description**: 1-3 sentences explaining what the issue is, why it matters, and what could go wrong if it is not addressed. Be specific -- reference variable names, function calls, and conditions.
 - **suggestion block**: Include a code suggestion block when you can provide a concrete fix. Omit it when the fix is too context-dependent or architectural. The suggestion should be valid code that could replace the problematic lines.
-- **related comment reference**: If an existing PR comment from another reviewer discusses the same or a related issue, mention it. This avoids duplicate feedback and shows awareness of prior review.
+- **related comment reference**: If an existing PR comment from another reviewer discusses the same or a related issue, reference it with the `thread_id` from `comments_by_file`. This allows `github-post` to reply in the existing thread instead of creating a separate comment. Include the `thread_id` in parentheses so it can be parsed: `(thread_id: {id})`.
 - **Reflexion Logic (HTML Comment)**: An internal reasoning block wrapped in `<!-- -->`. Use this during the Actor-Critic loop to justify the finding. It should NOT be included in the final markdown shown to the user or posted to GitHub.
 
 ## Filtering Rules

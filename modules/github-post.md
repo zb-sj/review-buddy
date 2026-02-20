@@ -78,7 +78,12 @@ gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/reviews \
 
 ### 5. Add Inline Comments
 
-For each finding in `findings_to_post`, add it as an inline comment on the pending review:
+For each finding in `findings_to_post`, determine whether to **reply to an existing thread** or **create a new inline comment**.
+
+#### Classify each finding
+
+- **Has `related_thread_id`**: This finding continues an existing review conversation. Post it as a **thread reply**.
+- **No `related_thread_id`**: This is a new finding. Post it as a **new inline comment** on the pending review.
 
 #### Prepare the comment body
 
@@ -87,7 +92,7 @@ Format each finding's comment body:
 ```markdown
 {severity_badge} **{short_title}**
 
-**Category:** {category} | **Confidence:** {score}/100
+**Category:** {category}
 
 {description}
 
@@ -102,9 +107,11 @@ Format each finding's comment body:
 | :--- | :--- |
 | ![Baseline]({baseline_url}) | ![Actual]({actual_url}) |
 
-{if related to existing comment:}
-> 💬 Related to existing thread by @{author}
+{if related to existing comment (thread reply):}
+> 💬 Continuing thread from @{author}
 ```
+
+Strip `**Confidence:** {score}/100` from the posted version — useful locally but noisy on GitHub.
 
 #### Handling Visual Assets
 
@@ -114,16 +121,39 @@ Format each finding's comment body:
    - Provide a placeholder in the comment: `![Upload Screenshot Here]`
    - Add a note to the user: "⚠️ Please manually drag-and-drop the relevant screenshot from `.review-buddy/assets/` into this comment once posted."
 
-#### Determine comment position
+#### Route A: Reply to Existing Thread
 
-For each finding, you need:
+When a finding has `related_thread_id`, reply to the existing comment thread using `add_reply_to_pull_request_comment`:
+
+```
+add_reply_to_pull_request_comment({
+  owner: PR_OWNER,
+  repo: PR_REPO,
+  pullNumber: PR_NUMBER,
+  commentId: related_thread_id,
+  body: comment_body
+})
+```
+
+If using CLI fallback:
+```bash
+gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/comments/{RELATED_THREAD_ID}/replies \
+  --method POST \
+  --field body="{comment_body}"
+```
+
+**Note**: Thread replies are posted immediately (not attached to the pending review). This is expected — GitHub does not support adding replies to existing threads via the pending review API.
+
+#### Route B: New Inline Comment
+
+When a finding has no `related_thread_id`, add it to the pending review:
+
+Determine the comment position:
 - `path` — the file path relative to repo root
 - `line` — the line number in the diff to comment on (must be within the diff hunks)
 - `side` — `RIGHT` for additions, `LEFT` for deletions
 
 **Important**: GitHub only allows inline comments on lines that are part of the diff. If a finding references a line not in the diff, attach the comment to the nearest diff line in the same file, or add it as a general review comment instead.
-
-#### Add the comment
 
 Use `add_comment_to_pending_review`:
 
@@ -151,7 +181,8 @@ gh api repos/{PR_OWNER}/{PR_REPO}/pulls/{PR_NUMBER}/reviews/{REVIEW_ID}/comments
 
 #### Handle errors
 
-- If a comment fails to post (e.g., invalid line number), log the error and continue with remaining comments
+- If a comment fails to post (e.g., invalid line number or thread_id no longer exists), log the error and continue with remaining comments
+- If a thread reply fails, fall back to posting as a new inline comment instead
 - At the end, report how many comments were successfully posted vs. failed
 - For failed comments, include them in the review body instead as general notes
 
@@ -190,7 +221,7 @@ After successful submission:
    ✅ Review posted to GitHub!
 
    Verdict: {verdict_badge} {verdict}
-   Comments: {posted_count} inline + {failed_count} in review body
+   Comments: {new_count} new inline + {reply_count} thread replies + {failed_count} in review body
    URL: https://github.com/{PR_OWNER}/{PR_REPO}/pull/{PR_NUMBER}
    ```
 

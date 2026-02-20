@@ -124,9 +124,9 @@ Group findings by severity using the format from `assets/finding-template.md`.
 - Only include findings with **confidence >= 80/100**
 - In `--self` mode, **suppress Minor findings entirely** (don't even show collapsed)
 - Finding IDs (H1, M3, L5, etc.) must be unique across the whole review — never reuse a number
-- If a finding relates to an existing comment, cross-reference it:
+- If a finding relates to an existing comment from `comments_by_file`, cross-reference it **with the thread_id** so `github-post` can reply in-thread:
   ```
-  > 💬 Related to @{author}'s comment at {file}:{line}
+  > 💬 Related to @{author}'s comment at {file}:{line} (thread_id: {thread_id})
   ```
 - Each finding should be actionable — don't flag things that are clearly intentional or follow established patterns in the codebase
 
@@ -200,7 +200,7 @@ The loop ends when:
 ## Output
 
 Pass the following to Phase 5:
-- `all_findings` — accumulated findings from all reviewed chunks, each with severity, file, line, description, and `marked_for_github` flag
+- `all_findings` — accumulated findings from all reviewed chunks, each with severity, file, line, description, `marked_for_github` flag, and `related_thread_id` (if the finding references an existing comment thread)
 - `chunks_reviewed` — count of chunks actually reviewed
 - `chunks_skipped` — count of chunks skipped
 - `positive_notes` — collected positive observations
