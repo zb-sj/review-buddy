@@ -92,26 +92,28 @@ Only findings with consolidated **confidence >= 80** are moved to Step 4.
 
 ### Step 4: Present Findings
 
-Group findings by severity using the format from `assets/finding-template.md`:
+Group findings by severity using the format from `assets/finding-template.md`.
+
+**Finding numbers are globally sequential across the entire review** — they do NOT reset per chunk. Maintain running counters (`next_H`, `next_M`, `next_L`) that persist across all chunks. For example, if Chunk 1 produces H1, H2, and M1, then Chunk 2's first critical finding is H3 (not H1).
 
 ```
 ### Findings for Chunk {N}
 
 {If any Action Required findings:}
-#### 🔴H-{M} Action Required
+#### 🔴 Action Required
 
-{findings formatted per assets/finding-template.md}
+{findings numbered H{next_H}, H{next_H+1}, ... formatted per assets/finding-template.md}
 
 {If any Recommended findings:}
-#### 🟡M-{M} Recommended
+#### 🟡 Recommended
 
-{findings formatted per assets/finding-template.md}
+{findings numbered M{next_M}, M{next_M+1}, ... formatted per assets/finding-template.md}
 
 {If any Minor findings AND not in --self mode:}
-#### 🟢L-{M} Minor
+#### 🟢 Minor
 <details>
 <summary>{count} minor suggestions</summary>
-{findings formatted per assets/finding-template.md}
+{findings numbered L{next_L}, L{next_L+1}, ... formatted per assets/finding-template.md}
 </details>
 
 {If no findings at all:}
@@ -121,6 +123,7 @@ Group findings by severity using the format from `assets/finding-template.md`:
 **Rules**:
 - Only include findings with **confidence >= 80/100**
 - In `--self` mode, **suppress Minor findings entirely** (don't even show collapsed)
+- Finding IDs (H1, M3, L5, etc.) must be unique across the whole review — never reuse a number
 - If a finding relates to an existing comment, cross-reference it:
   ```
   > 💬 Related to @{author}'s comment at {file}:{line}
@@ -170,9 +173,9 @@ If user chooses **"Deep-dive"**:
 
 If user chooses **"Mark findings for GitHub"**:
 
-- Show a numbered list of findings from this chunk, e.g.:
-   🔴H-1 Action Required: Unchecked null dereference
-   🟡M-1 Recommended: Missing error handling
+- Show a numbered list of findings from this chunk using their global IDs, e.g.:
+   🔴 H3 Action Required: Unchecked null dereference
+   🟡 M5 Recommended: Missing error handling
 - Ask which to mark (all / specific numbers)
 - Set `marked_for_github: true` on selected findings
 - Continue to the user gate (don't advance chunks yet)
@@ -183,6 +186,7 @@ After the user chooses to continue (or skip), update the state:
 - Mark the current chunk as "reviewed" (or "skipped")
 - Append any new findings to the accumulated findings list
 - Update the `updated` timestamp
+- Persist the current finding counters (`next_H`, `next_M`, `next_L`) so the next chunk continues the sequence
 
 ## Loop Termination
 
