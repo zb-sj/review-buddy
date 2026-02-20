@@ -20,7 +20,7 @@ For each chunk starting from `user_start_chunk`:
 
 ```
 ---
-## Chunk {N} of {total} — {category_summary}
+## Chunk {N} of {total} — {semantic_label}
 
 **Files:** {file1}, {file2}, ...
 **LOC:** {chunk_loc} lines changed | **Est. time:** ~{minutes} min

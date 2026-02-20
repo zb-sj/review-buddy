@@ -55,13 +55,14 @@ The results are synthesized by the Leader and presented after the Phase 1 gate i
 Follow the instructions in `modules/chunk-planner.md`.
 
 This phase:
-1. Classifies each file by category
-2. Builds dependency graph from imports in diffs
-3. Sorts files: topological order + category priority
-4. Groups into chunks (target 300 LOC, range 200–450)
-5. Handles edge cases (single file, tiny PR, huge PR)
-6. Displays the chunk plan table
-7. Presents a user gate
+1. Identifies logical change units from commits, dependencies, naming, and PR description
+2. Builds semantic groups — each chunk tells a self-contained story about one logical change
+3. Handles cross-cutting files (shared types, config, docs)
+4. Orders chunks for reviewability (foundations first, dependencies before consumers)
+5. Applies size guardrails (target 300 LOC, range 150–500), splitting large groups by sub-concern
+6. Handles edge cases (single file, tiny PR, huge PR, squash commits)
+7. Displays the chunk plan table with semantic labels
+8. Presents a user gate
 
 **Handle user gate responses:**
 - **Start from chunk 1** → begin Phase 4 at chunk 1
