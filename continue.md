@@ -4,6 +4,10 @@ This workflow resumes a previously paused full review session. It loads saved st
 
 Invoked via: `/review continue` or `/review continue <PR_ARG>`
 
+## Context Management
+
+**Lazy-load modules**: Only read a module file when you are about to execute that step. Re-read `modules/chunk-reviewer.md` before each chunk if deep into the review. Do not carry forward raw instructions from completed phases.
+
 ## Workflow
 
 ### Step 1: Parse PR argument (if provided)
@@ -36,17 +40,15 @@ Follow the corruption handling in `scripts/state-manager.md` -- warn the user, d
 
 If `<PR_ARG>` was provided in Step 1, verify that the loaded state matches the requested PR:
 - `PR_OWNER`, `PR_REPO`, and `PR_NUMBER` from the argument must match the state's `pr_owner`, `pr_repo`, and `pr_number`.
-- If they do not match, warn the user:
-  ```
-  The saved session is for {pr_owner}/{pr_repo}#{pr_number}, but you requested {PR_OWNER}/{PR_REPO}#{PR_NUMBER}.
+- If they do not match, present a gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`):
 
-  Options:
-    1. Resume the saved session ({pr_owner}/{pr_repo}#{pr_number})
-    2. Discard the saved session and start a fresh review of {PR_OWNER}/{PR_REPO}#{PR_NUMBER}
+  Context: "The saved session is for {pr_owner}/{pr_repo}#{pr_number}, but you requested {PR_OWNER}/{PR_REPO}#{PR_NUMBER}."
 
-  Which would you prefer? [1/2]
-  ```
-  If the user chooses 1, continue with the saved state. If 2, delete the state file and stop -- the user should invoke `/review <PR_ARG>` to start fresh.
+  **Options:**
+  1. **Resume saved session** — Continue reviewing {pr_owner}/{pr_repo}#{pr_number}
+  2. **Start fresh** — Discard saved session and begin a new review of {PR_OWNER}/{PR_REPO}#{PR_NUMBER}
+
+  If the user chooses 1, continue with the saved state. If 2, delete the state file and stop -- the user should invoke `/review-buddy <PR_ARG>` to start fresh.
 
 Follow the **Validate State** operation from `scripts/state-manager.md` to check if the PR head SHA has changed since the session was saved. If it has diverged, present the user with the options described in `scripts/state-manager.md` (continue with stale data or restart).
 

@@ -178,9 +178,16 @@ If user chooses **"Pause & save"**:
 - Stop the review loop
 
 If user chooses **"Deep-dive"**:
-- Ask which finding to explore
-- Provide more detailed analysis: broader context, potential fixes, impact assessment
-- After deep-dive, return to the user gate for this same chunk
+
+First, ask which finding to explore (by ID, e.g., "H1", "M2"). Then present a sub-gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`):
+
+**Options:**
+1. **Analyze context** — Read surrounding code and explain the broader impact
+2. **Suggest fix** — Provide a concrete code suggestion for this finding
+3. **Check similar patterns** — Search the codebase for the same pattern elsewhere
+4. **Return to chunk** — Go back to the chunk review gate
+
+After any deep-dive action (1-3), re-display this sub-gate so the user can explore further or return. When the user chooses **"Return to chunk"**, re-display the main chunk user gate (Step 6).
 
 ### Step 7: Save State After Each Chunk
 

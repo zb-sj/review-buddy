@@ -12,6 +12,10 @@ Invoked via: `/review quick <PR_ARG>` or `/review quick <PR_ARG> --focus <area>`
 | `--focus <area>` | Boost confidence for findings matching the focus area (e.g., `security`, `performance`) |
 | `--no-mentoring` | Disable educational mentor notes and pro-tips |
 
+## Context Management
+
+**Lazy-load modules**: Only read a module file when you are about to execute that step. Do not pre-read all referenced modules — PR data will consume significant context.
+
 ## Workflow
 
 ### Step 1: Parse PR argument

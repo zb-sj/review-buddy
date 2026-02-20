@@ -83,22 +83,23 @@ Total: 4 findings (3 marked for posting)
 
 ### Step 6: User selection
 
-Let the user adjust which findings to post:
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
 
-```
-Options:
-  all     - Mark all findings for posting
-  none    - Unmark all findings
-  toggle N - Toggle finding #N
-  post    - Proceed with posting marked findings
-  cancel  - Cancel without posting
+**Primary options:**
+1. **Post all marked** — Submit all findings marked `[x]` to GitHub ({count} comments)
+2. **Post only Action Required** — Submit only critical findings
+3. **Select specific** — Toggle individual findings by ID before posting
+4. **Cancel** — Don't post; findings remain saved locally
 
-Your choice:
-```
+**Free-form commands:**
+- **"toggle H1, M2"** — Toggle specific findings on/off for posting
+- **"all"** — Mark all findings for posting
+- **"none"** — Unmark all findings
 
-Repeat the prompt until the user chooses `post` or `cancel`.
+If the user chooses **"Select specific"** or uses **"toggle"**:
+- Toggle the specified findings, re-display the findings table with updated marks, and re-present this gate.
 
-If the user types `cancel`:
+If the user chooses **"Cancel"**:
 ```
 Posting cancelled. Findings are still saved in .review-buddy/review-buddy-findings.md
 ```

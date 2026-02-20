@@ -36,7 +36,31 @@ If no structured tool is available, output a **Protocol Block**:
 ```
 
 ### 3. The "Stop" Rule
-The agent **MUST** terminate its current turn after presenting the gate. It cannot assume "Proceed" unless the user explicitly provides that intent in the next turn.
+
+The agent **MUST** terminate its current turn after presenting the gate. It **MUST NOT**:
+- Assume "Proceed" and continue without user input
+- Auto-select a default option after a timeout
+- Combine the gate with the next phase's output in the same turn
+
+**Enforcement**: If you find yourself writing analysis or fetching data after displaying a gate in the same turn, **STOP** — you are violating this rule. Present the gate, then yield control to the user.
+
+### 4. Unrecognized Input
+
+If the user's response doesn't match any option, number, label, or known free-form command:
+
+1. Echo back what was received: `I didn't recognize "{input}".`
+2. Show the available options again (brief form — just the numbered list, not the full context)
+3. Yield control again — do **not** pick a default
+
+This loop continues until the user provides a recognized input. Never silently ignore unrecognized input.
+
+### 5. Confirmation on Destructive Actions
+
+Before executing any destructive free-form command (`discard`, bulk `deselect`), confirm with the user:
+- `"discard"` → "This will remove {N} findings from this chunk. They won't be recoverable. Proceed? [y/n]"
+- `"discard"` in synthesis → "This will discard all {N} findings and exit without posting. Proceed? [y/n]"
+
+If the user confirms (y/yes), proceed. If not, re-display the gate.
 
 ## Standard Options Reference
 
@@ -45,10 +69,13 @@ Use these standard labels for consistency across all user gates:
 | Context | Primary Options | Free-form Commands |
 |---------|----------------|-------------------|
 | **Phase Gate** | `Proceed`, `Set focus`, `Quick mode`, `Cancel` | — |
+| **Visual Discovery** | `Proceed with Visual Review`, `Skip Visual Review`, `Refresh Context` | — |
 | **Chunk Plan** | `Start from chunk 1`, `Skip to chunk N`, `Review all at once`, `Cancel` | — |
 | **Chunk Loop** | `Continue`, `Deep-dive`, `Pause & save`, `Skip to synthesis` | `discard`, `todo: {text}`, `deselect {IDs}` |
 | **Deep-dive** | `Analyze context`, `Suggest fix`, `Check similar patterns`, `Return to chunk` | — |
 | **Synthesis** | `Post all marked`, `Post only Action Required`, `Select specific`, `Save locally` | `discard` |
+| **Post-only** | `Post all marked`, `Post only Action Required`, `Select specific`, `Cancel` | `toggle {IDs}`, `all`, `none` |
+| **Continue (mismatch)** | `Resume saved session`, `Start fresh` | — |
 
 ## Agnostic Input Handling
 

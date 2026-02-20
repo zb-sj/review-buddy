@@ -53,7 +53,9 @@ Present a summary of the discovered visual context:
 
 ### 6. User Gate
 
-**Select an action:**
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
+
+**Options:**
 1. **Proceed with Visual Review** — Include visual analysis in Phase 4
 2. **Skip Visual Review** — Continue with standard code-only review
 3. **Refresh Context** — Re-run discovery (e.g., if Figma links were just added)
