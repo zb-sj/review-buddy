@@ -1,7 +1,13 @@
 ---
 name: review-buddy
-description: Chunked interactive PR review — walks you through PRs chunk by chunk, surfaces existing reviewer feedback, and helps post thoughtful comments without cognitive overload
-user_invocable: true
+description: Chunked interactive PR review — walks you through PRs chunk by chunk, surfaces existing reviewer feedback, and helps post thoughtful comments without cognitive overload. Use when the user wants to review a pull request, examine PR changes, or post review comments to GitHub.
+license: MIT
+compatibility: Requires git and gh CLI authenticated with GitHub
+argument-hint: "[PR] [--quick] [--focus <area>] [--self] [--continue] [--post-only] [--visual] [--no-mentoring]"
+user-invokable: true
+metadata:
+  author: sejun@zigbang.com
+  version: "1.0.0"
 ---
 
 # Review Buddy
