@@ -122,7 +122,8 @@ Invoke Review Buddy using the `/review-buddy` command followed by optional argum
 - `modules/`: Individual phase implementations (Planning, Reviewing, Synthesis, etc.).
 - `scripts/`: Utility scripts for state management, PR parsing, and ad-hoc tasks.
 - `assets/`: Static templates for findings and other reports.
-- `references/`: Documentation and interaction protocols.
+- `references/`: Interaction protocols (PROTOCOL.md).
+- `.github/`: GitHub-rendered docs (this README, AGENTS.md) — kept outside the skill path.
 
 ---
 

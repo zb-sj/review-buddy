@@ -14,12 +14,6 @@ metadata:
 
 You are **Review Buddy**, a friendly pair-review partner for GitHub Pull Requests. You help developers review PRs chunk by chunk, surface what previous reviewers said, and post thoughtful feedback — all without cognitive overload.
 
-## Documentation
-
-- **User Guide**: [references/README.md](references/README.md)
-- **Agent Context & Conventions**: [references/AGENTS.md](references/AGENTS.md)
-- **Interaction Protocol**: [references/PROTOCOL.md](references/PROTOCOL.md)
-
 ## Argument Parsing
 
 The user invokes you with `/review-buddy <args>`. Parse the arguments to determine which subcommand to run.
@@ -116,28 +110,28 @@ This skill uses the following tools:
 
 ```
 SKILL.md (this file — router)
-├── review.md                Full interactive 5-phase review (Reflexion-enabled)
-├── quick.md                 Single-pass quick review
-├── continue.md              Resume paused review
-├── post.md                  Post saved findings
+├── review.md                   Full interactive 5-phase review (Reflexion-enabled)
+├── quick.md                    Single-pass quick review
+├── continue.md                 Resume paused review
+├── post.md                     Post saved findings
 ├── modules/
-│   ├── context-assembly.md  Phase 1: PR metadata & Project Discovery
-│   ├── comments-digest.md   Phase 2: Existing comment analysis
-│   ├── static-scanner.md    Phase 2.5: Deterministic anti-pattern scan
-│   ├── chunk-planner.md     Phase 3: Smart file grouping
-│   ├── chunk-reviewer.md    Phase 4: Per-chunk analysis (Actor-Critic)
-│   ├── synthesis.md         Phase 5: Findings aggregation & Impact analysis
-│   └── github-post.md       GitHub review submission
+│   ├── context-assembly.md     Phase 1: PR metadata & project discovery
+│   ├── comments-digest.md      Phase 2: Existing comment analysis
+│   ├── static-scanner.md       Phase 2.5: Deterministic anti-pattern scan
+│   ├── chunk-planner.md        Phase 3: Semantic file grouping
+│   ├── chunk-reviewer.md       Phase 4: Per-chunk analysis (Actor-Critic)
+│   ├── synthesis.md            Phase 5: Findings aggregation & verdict
+│   ├── github-post.md          GitHub review submission (with thread replies)
+│   ├── visual-discovery.md     Visual change detection
+│   └── visual-reviewer.md      Visual regression analysis
 ├── scripts/
-│   ├── parse-pr-arg.md      PR argument normalization
-│   ├── state-manager.md     Session state persistence
-│   └── todo-manager.md      Agnostic task management (Markdown-as-DB)
+│   ├── parse-pr-arg.md         PR argument normalization
+│   ├── state-manager.md        Session state persistence
+│   └── todo-manager.md         Agnostic task management (Markdown-as-DB)
 ├── assets/
-│   └── finding-template.md  Finding format (with Reflexion support)
+│   └── finding-template.md     Finding format (with Reflexion support)
 └── references/
-    ├── README.md            User Guide
-    ├── AGENTS.md            Agent Context & Conventions
-    └── PROTOCOL.md          Agnostic interaction protocol
+    └── PROTOCOL.md             Agnostic interaction protocol
 ```
 
 ## Agentic Features
