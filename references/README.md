@@ -1,18 +1,44 @@
 # 🤖 Review Buddy
 
-**Review Buddy** is an interactive, chunked Pull Request review partner designed to help developers review PRs without cognitive overload. It intelligently breaks down large PRs into logical groups of files (chunks), surfaces existing reviewer feedback, and guides you through a focused review process.
+**Chunked interactive PR review** — the only agent skill that walks you through PRs chunk by chunk, like a real pair-review partner.
+
+---
+
+## 🤔 Why Another Review Skill?
+
+Most PR review skills do one thing: dump a wall of findings on you. They run a single pass over the diff, produce a long list, and leave you to sort through it. That's not a review — that's a report.
+
+**Review Buddy is different.** It breaks PRs into logical chunks, walks you through each one interactively, and only posts to GitHub what you've actually reviewed and approved. It's the difference between a code scanner and a pair-programming partner.
+
+### How It Compares
+
+| Feature | Typical Review Skill | Review Buddy |
+| ------- | -------------------- | ------------ |
+| Review style | Single-pass dump | Interactive chunk-by-chunk walkthrough |
+| Chunk logic | None (file list) | Semantic grouping by commit, dependency, and naming |
+| Reviewer control | Take it or leave it | Deep-dive, skip, pause, resume, deselect per-finding |
+| Existing comments | Ignored | Digested, surfaced, and replied in-thread — won't duplicate feedback |
+| False positive reduction | None | Actor-Critic self-reflection on every finding |
+| GitHub posting | All-or-nothing | Selective — post all, post critical only, or pick individual findings |
+| State persistence | None | Pause mid-review, resume later with `--continue` |
+| Focus modes | Generic | Security, performance, correctness, types, error-handling |
+| Self-review | No | `--self` suppresses nits for reviewing your own PR |
+| Visual review | No | Figma design comparison, Playwright/Cypress regression diffs |
+| Platform lock-in | Usually Claude Code only | Agent-agnostic — works on any platform supporting SKILL.md |
+| Educational value | Findings only | Mentor notes explain *why*, grounded in project conventions |
 
 ---
 
 ## 🚀 Key Features
 
-- **🧠 Cognitive Load Management**: Breaks large PRs into reviewable chunks (~300 LOC) based on file type and dependency order.
-- **🎯 Smart Prioritization**: Groups files by category (Types → Config → Core Logic → Components → Tests) to ensure you review foundational changes first.
+- **🧠 Cognitive Load Management**: Breaks large PRs into reviewable chunks (~300 LOC) based on semantic grouping.
+- **🎯 Smart Prioritization**: Groups files by commit, dependency, and naming to ensure you review foundational changes first.
 - **💬 Context Awareness**: Surfaces existing comments and unresolved threads so you don't miss previous feedback.
-- **🧩 Agnostic & Future-Ready**: Built to run on any AI platform (Gemini, Claude, etc.) using standard protocols, while proactively integrating the latest AI and developer tooling innovations.
+- **🔗 Thread Continuation**: Replies in existing comment threads instead of creating duplicates.
+- **🧩 Agnostic & Future-Ready**: Built to run on any AI platform using standard protocols, while proactively integrating the latest AI and developer tooling innovations.
 - **🎓 Educational & Mentoring**: Provides concise "Mentor's Notes" (why, pro-tips, domain context) for each finding to help both the reviewer and reviewee learn and grow.
 - **⏯️ Pause & Resume**: Saves your progress in a local state file, allowing you to stop and continue your review anytime.
-- **⚡ Multiple Modes**: 
+- **⚡ Multiple Modes**:
   - **Interactive**: The default guided experience.
   - **Quick**: A single-pass review for small PRs.
   - **Visual**: Automated and interactive visual regression review (via Figma, Playwright, or MobileMCP).
@@ -46,7 +72,7 @@ Review Buddy follows a structured 5-phase workflow:
 
 1.  **Phase 1: Context Assembly**: Fetches PR metadata, diffs, and project context.
 2.  **Phase 2: Comments Digest**: Aggregates existing review comments to highlight areas needing attention or verification.
-3.  **Phase 3: Chunk Planning**: Categorizes files and builds a dependency graph to create an optimized review order.
+3.  **Phase 3: Chunk Planning**: Groups files into semantic chunks by commit, dependency, and naming for an optimized review order.
 4.  **Phase 4: Interactive Review**: Walks you through each chunk one by one, allowing you to record findings and mark them as "Action Required" or "Suggestions."
 5.  **Phase 5: Synthesis & Post**: Summarizes all findings, provides a verdict (Approve/Request Changes), and submits the review to GitHub.
 
@@ -69,8 +95,10 @@ Invoke Review Buddy using the `/review-buddy` command followed by optional argum
 ### Advanced Options
 
 - `--focus <area>`: Focus on `security`, `performance`, `correctness`, `types`, or `error-handling`.
-- `--self`: Self-review mode (less critical of nits).
-- `--PR`: Supports URLs (`https://github.com/org/repo/pull/123`) or shorthand (`org/repo#123`).
+- `--self`: Self-review mode (suppresses minor nits).
+- `--visual`: Force visual regression review even if not auto-detected.
+- `--no-mentoring`: Disable educational mentor notes and pro-tips.
+- `[PR]`: Supports PR numbers (`123`), URLs (`https://github.com/org/repo/pull/123`), or shorthand (`org/repo#123`).
 
 ### Examples
 
@@ -90,6 +118,7 @@ Invoke Review Buddy using the `/review-buddy` command followed by optional argum
 - `review.md`: The full interactive 5-phase review workflow.
 - `quick.md`: Single-pass review workflow.
 - `continue.md`: Logic for resuming a paused session.
+- `post.md`: Post-only workflow for submitting saved findings.
 - `modules/`: Individual phase implementations (Planning, Reviewing, Synthesis, etc.).
 - `scripts/`: Utility scripts for state management, PR parsing, and ad-hoc tasks.
 - `assets/`: Static templates for findings and other reports.
@@ -100,7 +129,7 @@ Invoke Review Buddy using the `/review-buddy` command followed by optional argum
 ## ⚙️ Requirements
 
 - **GitHub CLI (`gh`)**: Must be authenticated and available in your shell.
-- **AI Agent Environment**: Designed to run within compatible agent skill enabled agents.
+- **AI Agent Environment**: Any agent runtime supporting the [Agent Skills](https://agentskills.io) open standard (SKILL.md).
 - **Permissions**: Needs read access to PRs/Issues and write access to PR Reviews.
 
 ---
