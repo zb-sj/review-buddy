@@ -168,7 +168,7 @@ Ask the user how to proceed:
 3. **Review all at once** — Skip chunking, review everything in one pass (not recommended for large PRs)
 4. **Cancel** — Stop the review
 
-Use `AskUserQuestion` with these options.
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
 
 ### 9. Output
 

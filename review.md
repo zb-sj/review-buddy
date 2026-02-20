@@ -85,13 +85,16 @@ This phase follows the **Agnostic A2A Protocol** (`modules/teams/protocol.md`) t
 4. **Look-ahead Concurrency**: While the user reviews Chunk N, the Leader triggers the A2A analysis for Chunk N+1 in the background.
 5. **Interactive Gate**: Leader presents findings and handles user intent.
 
-**Handle user gate responses per chunk:**
-- **Continue** → move to next chunk
+**Handle user gate responses per chunk (via Agnostic Interaction Protocol):**
+- **Continue** → mark findings for GitHub, move to next chunk
 - **Deep-dive** → explore a finding in detail, then return to gate
-- **Mark for GitHub** → flag findings for posting, then return to gate
-- **Discard** → remove chunk's findings, continue
 - **Pause & save** → save state with `scripts/state-manager.md`, exit
 - **Skip to synthesis** → break the loop, go to Phase 5
+
+**Free-form commands (via "Other"):**
+- **"discard"** → remove chunk's findings, return to gate
+- **"todo: {text}"** → add task to todo list, return to gate
+- **"deselect {IDs}"** → unmark specific findings from GitHub posting
 
 **State management:** Save state after each chunk completes using `scripts/state-manager.md`. This enables resume with `--continue`.
 
@@ -113,12 +116,14 @@ This phase:
 5. Displays the final summary
 6. Presents posting user gate
 
-**Handle posting responses:**
+**Handle posting responses (via Agnostic Interaction Protocol):**
 - **Post all marked** → use `modules/github-post.md` to submit review
 - **Post only Action Required** → filter and post
-- **Select specific** → let user choose, then post
+- **Select specific** → let user choose by finding ID, then post
 - **Save locally** → use `scripts/state-manager.md` to export findings
-- **Discard** → clean up state, exit
+
+**Free-form (via "Other"):**
+- **"discard"** → clean up state, exit
 
 After successful posting or save, clean up state files and display a confirmation.
 

@@ -10,11 +10,9 @@ You are performing Phase 1 of a chunked PR review. Your goal is to gather all co
 
 ### 1. Load GitHub Tools
 
-Use `ToolSearch` to load the required GitHub MCP tools:
-- Search for `+github pull_request` to load PR-related tools
-- Search for `+github issue` to load issue tools (for linked issues)
-
-If GitHub MCP tools are not available, fall back to `gh` CLI commands.
+Discover and load GitHub-related tools available in the current runtime:
+- Look for MCP-provided GitHub tools (PR read, issue read, file listing, etc.)
+- If no GitHub MCP tools are available, fall back to `gh` CLI commands
 
 ### 2. Fetch PR Data (parallel)
 
@@ -122,7 +120,7 @@ Ask the user to choose how to proceed:
 3. **Quick mode** — Switch to quick single-pass review
 4. **Cancel** — Stop the review
 
-Use `AskUserQuestion` with these options.
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
 
 ### 10. Output
 

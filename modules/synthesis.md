@@ -123,15 +123,15 @@ Present up to 3 key themes and 1-2 growth areas (if `mentoring` is true).
 {List all findings grouped by severity, numbered sequentially across all chunks, using assets/finding-template.md format}
 
 #### 🔴 Action Required ({count})
-H-{N} {findings}
+{findings numbered H1, H2, ... using globally sequential IDs from chunk review}
 
 #### 🟡 Recommended ({count})
-M-{N} {findings}
+{findings numbered M1, M2, ... using globally sequential IDs from chunk review}
 
 #### 🟢 Minor ({count})
 <details>
 <summary>Show {count} minor suggestions</summary>
-L={N} {findings}
+{findings numbered L1, L2, ... using globally sequential IDs from chunk review}
 </details>
 
 ### Positive Aspects
@@ -144,14 +144,16 @@ L={N} {findings}
 
 ### 6. User Gate — Posting Decision
 
-Solicit user intent following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
 
-**Options:**
-1. **Post all marked findings to GitHub** — Submit a review with all `marked_for_github` findings ({count} comments)
+**Primary options:**
+1. **Post all marked** — Submit a review with all `marked_for_github` findings ({count} comments)
 2. **Post only Action Required** — Submit only the critical findings
-3. **Select specific findings** — Choose which findings to post (show numbered list)
+3. **Select specific** — Choose which findings to post (show numbered list)
 4. **Save locally** — Write findings to `.review-buddy/review-buddy-findings.md` for later posting with `--post-only`
-5. **Discard** — Don't save or post anything
+
+**Free-form commands:**
+- **"discard"** — Don't save or post anything, clean up and exit
 
 #### If user chooses a posting option (1, 2, or 3):
 - If there are uncompleted tasks in `.review-buddy/review-todo.md`, warn the user:
@@ -160,10 +162,12 @@ Solicit user intent following the **Agnostic Interaction Protocol** (`references
 
 #### If user chooses "Select specific findings":
 
-- Display a numbered list of all findings, e.g.:
-    🔴H-1 Action Required: Unchecked null dereference
-    🟡M-1 Recommended: Missing error handling
-- Ask the user to enter the numbers they want to post (comma-separated)
+- Display a numbered list of all findings using their global IDs, e.g.:
+    🔴 H1 Action Required: Unchecked null dereference
+    🔴 H2 Action Required: SQL injection in query builder
+    🟡 M1 Recommended: Missing error handling
+    🟡 M2 Recommended: Unbounded list fetch
+- Ask the user to enter the IDs they want to post (comma-separated, e.g. "H1, M2")
 - Mark only those findings for GitHub posting
 - Return to the Posting Decision gate
 
@@ -172,7 +176,7 @@ Solicit user intent following the **Agnostic Interaction Protocol** (`references
 - Display: "Findings saved to `.review-buddy/review-buddy-findings.md`. Post later with `/review-buddy --post-only`."
 - Clean up state and todo files.
 
-#### If user chooses "Discard":
+#### If user types "discard" (free-form):
 - Clean up state and todo files.
 - Exit.
 

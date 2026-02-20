@@ -13,11 +13,9 @@ You are posting review findings to GitHub as a single cohesive review. This crea
 
 ### 1. Load GitHub Tools
 
-Use `ToolSearch` to ensure these GitHub MCP tools are available:
-- `+github pull_request_review_write` — for creating and submitting reviews
-- `+github add_comment_to_pending_review` — for adding inline comments
-
-If MCP tools are unavailable, fall back to `gh api` CLI commands.
+Discover and load GitHub tools available in the current runtime:
+- Look for MCP-provided tools for creating reviews and adding inline comments (e.g., `pull_request_review_write`, `add_comment_to_pending_review`)
+- If MCP tools are unavailable, fall back to `gh api` CLI commands
 
 ### 2. Map Verdict to GitHub Event
 

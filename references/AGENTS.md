@@ -34,7 +34,7 @@ Review Buddy follows a strict **Agnostic Approach** while maintaining an **Innov
 Review state is stored in `.review-buddy/review-buddy-state.md`. This file uses YAML frontmatter for metadata and Markdown tables/blocks for findings. Use `scripts/state-manager.md` logic for all state operations.
 
 ### 2. Interaction Protocol
-User gates must follow `references/PROTOCOL.md`. Use the `AskUserQuestion` tool when available, falling back to a structured Markdown "Protocol Block" in basic CLI environments.
+User gates must follow `references/PROTOCOL.md`. The protocol auto-detects the best available interaction method (structured selection tools, IDE prompts, or plain I/O fallback).
 
 ### 3. Chunking Logic
 Files are grouped into chunks of ~300 LOC. See `modules/chunk-planner.md` for the priority-based sorting and grouping algorithm.

@@ -144,21 +144,32 @@ Keep this brief. Skip if nothing particularly noteworthy.
 
 ### Step 6: User Gate
 
-Solicit user intent following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`). Display the current progress from `.review-buddy/review-todo.md` before the gate.
+Display the current progress from `.review-buddy/review-todo.md` before the gate.
 
-**Options:**
-1. **Continue to chunk {N+1}** — Move to the next chunk
-2. **Deep-dive** — Explore a specific finding in more detail (ask which one)
-3. **Mark findings for GitHub** — Mark all or selected findings from this chunk for posting to GitHub
-4. **Add Todo** — Add a custom task to `.review-buddy/review-todo.md` for later
-5. **Discard findings** — Remove findings from this chunk (won't be posted)
-6. **Pause & save** — Save progress and exit (can resume with `--continue`)
-7. **Skip to synthesis** — Jump to final summary without reviewing remaining chunks
+Present this gate following the **Agnostic Interaction Protocol** (`references/PROTOCOL.md`).
 
-If user chooses **"Add Todo"**:
-- Prompt for the task description.
+**Primary options:**
+1. **Continue** — Mark findings for GitHub and move to chunk {N+1}
+2. **Deep-dive** — Explore a specific finding in more detail
+3. **Pause & save** — Save progress and exit (resume with `--continue`)
+4. **Skip to synthesis** — Jump to final summary
+
+**Free-form commands** (user can type these directly):
+- **"discard"** — Remove this chunk's findings (won't be posted)
+- **"todo: {text}"** — Add a custom task to `.review-buddy/review-todo.md`
+- **"deselect H3, M1"** — Unmark specific findings from GitHub posting (by default, Continue marks all)
+
+If user types **"todo: {text}"** (free-form):
 - Use `scripts/todo-manager.md` to append the task.
 - Re-display the User Gate for the current chunk.
+
+If user types **"discard"** (free-form):
+- Remove all findings from this chunk (won't be posted to GitHub).
+- Display confirmation and re-display the User Gate.
+
+If user types **"deselect {IDs}"** (free-form):
+- Unmark the specified finding IDs from GitHub posting (e.g., "deselect H3, M1").
+- Display which findings remain marked and re-display the User Gate.
 
 If user chooses **"Pause & save"**:
 - Use `scripts/state-manager.md` and `scripts/todo-manager.md` to save current state and progress.
@@ -170,15 +181,6 @@ If user chooses **"Deep-dive"**:
 - Ask which finding to explore
 - Provide more detailed analysis: broader context, potential fixes, impact assessment
 - After deep-dive, return to the user gate for this same chunk
-
-If user chooses **"Mark findings for GitHub"**:
-
-- Show a numbered list of findings from this chunk using their global IDs, e.g.:
-   🔴 H3 Action Required: Unchecked null dereference
-   🟡 M5 Recommended: Missing error handling
-- Ask which to mark (all / specific numbers)
-- Set `marked_for_github: true` on selected findings
-- Continue to the user gate (don't advance chunks yet)
 
 ### Step 7: Save State After Each Chunk
 

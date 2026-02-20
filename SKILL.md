@@ -101,10 +101,10 @@ Pass to `post.md` with:
 ## Tools Required
 
 This skill uses the following tools:
-- **GitHub MCP** (loaded via ToolSearch): `pull_request_read`, `pull_request_review_write`, `add_comment_to_pending_review`, `issue_read`
-- **GitHub CLI**: `gh pr view`, `gh pr diff`, `gh pr checks`, `gh api` (fallback when MCP unavailable)
-- **Standard tools**: Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion, ToolSearch, Task
-- **Agnostic Protocols**: Defined in `references/PROTOCOL.md` and `scripts/todo-manager.md`
+- **GitHub API** (via MCP tools or `gh` CLI): PR read, review write, inline comments, issue read
+- **File & code tools**: Read, Write, Edit, Glob, Grep, Bash (or equivalents in the host environment)
+- **User interaction**: Follows the Agnostic Interaction Protocol (`references/PROTOCOL.md`) — adapts to structured selection tools, IDE prompts, or plain I/O
+- **State management**: `scripts/state-manager.md`, `scripts/todo-manager.md`
 
 ## Architecture
 
