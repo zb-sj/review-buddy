@@ -4,6 +4,14 @@
 
 ---
 
+## 📦 Quick Start
+
+```bash
+npx skills add zb-sj/review-buddy
+# Then start reviewing:
+claude /review-buddy 
+```
+
 ## 🤔 Why Another Review Skill?
 
 Most PR review skills do one thing: dump a wall of findings on you. They run a single pass over the diff, produce a long list, and leave you to sort through it. That's not a review — that's a report.
